@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AuctionCore | Pro Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="status-card">
+                <div class="dot"></div>
+                <span>SYSTEM ONLINE</span>
+                <p id="user-count">Users: 0</p>
+            </div>
+
+            <div class="admin-panel">
+                <button class="reset-btn" onclick="triggerReset()">RESET ALL DATA</button>
+            </div>
+
+            <h3>LIVE ACTIVITY</h3>
+            <div id="activity-feed" class="feed"></div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <div class="logo">AUCTION<span>CORE</span> v2.0</div>
+                <div class="filter-bar">
+                    <button onclick="filterItems('All')">ALL</button>
+                    <button onclick="filterItems('Supercars')">SUPERCARS</button>
+                    <button onclick="filterItems('Tech')">TECH</button>
+                    <button onclick="filterItems('Art')">ART</button>
+                </div>
+            </header>
+
+            <div id="auction-grid" class="auction-grid"></div>
+        </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

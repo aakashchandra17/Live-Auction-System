@@ -1,0 +1,36 @@
+:root {
+    --primary: #00d4ff;
+    --bg: #05070a;
+    --card: #11141b;
+    --border: #22272e;
+    --text: #adbac7;
+    --danger: #ff4d4d;
+}
+
+body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; }
+.app-container { display: flex; height: 100vh; }
+
+.sidebar { width: 280px; background: #0d1117; border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; }
+.status-card { background: #1c2128; padding: 15px; border-radius: 8px; border-left: 4px solid #2ea043; margin-bottom: 20px; }
+.dot { width: 10px; height: 10px; background: #2ea043; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #2ea043; margin-right: 8px; }
+
+.reset-btn { width: 100%; background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 20px; font-weight: bold; }
+.reset-btn:hover { background: var(--danger); color: white; }
+
+.feed { font-size: 12px; font-family: 'Courier New', Courier, monospace; overflow-y: auto; flex-grow: 1; color: #768390; }
+
+.main-content { flex: 1; padding: 30px; overflow-y: auto; }
+.logo { font-size: 24px; font-weight: 800; letter-spacing: 2px; margin-bottom: 20px; }
+.logo span { color: var(--primary); }
+
+.filter-bar { margin-bottom: 30px; display: flex; gap: 10px; }
+.filter-bar button { background: #1c2128; border: 1px solid var(--border); color: white; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+.filter-bar button:hover { border-color: var(--primary); }
+
+.auction-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.auction-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: 0.3s; }
+.auction-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+
+.price-box { font-size: 32px; color: #fff; margin: 15px 0; font-weight: bold; }
+input { width: 100%; padding: 10px; box-sizing: border-box; background: #0d1117; border: 1px solid var(--border); color: #fff; border-radius: 5px; margin-bottom: 10px; }
+.bid-btn { width: 100%; padding: 12px; background: var(--primary); border: none; color: #000; font-weight: bold; border-radius: 5px; cursor: pointer; }
