@@ -3,38 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AuctionCore v2.0 | Dashboard</title>
+    <title>Live Auction Meeting System | Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- LOGIN SECTION -->
+    <!-- LOGIN SCREEN -->
     <div id="login-overlay" class="overlay">
         <div class="login-card">
-            <div class="glitch-wrapper">
-                <h1 class="logo-text">AUCTION<span>CORE</span></h1>
-            </div>
+            <h1>AUCTION<span>CORE</span></h1>
             <p>Secure Access Protocol | Enter Name to Join</p>
             <input type="text" id="username-input" placeholder="Username..." autocomplete="off">
             <button onclick="handleLogin()" class="login-btn">INITIALIZE DASHBOARD</button>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD (Hidden until login) -->
+    <!-- DASHBOARD -->
     <div id="dashboard" class="hidden">
         <aside class="sidebar">
-            <div class="sidebar-logo">AC <span>v2.0</span></div>
-            <nav class="nav-links">
-                <a href="#" class="active"><span>🏠</span> Dashboard</a>
-                <a href="#"><span>📊</span> Market Trends</a>
-                <a href="#"><span>🛡️</span> Security</a>
-                <a href="#"><span>📞</span> Contact Support</a>
-            </nav>
-            <div class="user-tag">
-                <div class="user-avatar"></div>
-                <div class="user-details">
-                    <span id="display-username">Guest</span>
-                    <small>Active Bidder</small>
+            <div class="sidebar-top">
+                <div class="sidebar-logo">AC <span>v2.0</span></div>
+                <nav class="nav-links">
+                    <a href="#" class="active"><span>🏠</span> Dashboard</a>
+                    <a href="#"><span>📊</span> Market Trends</a>
+                    <a href="#"><span>🛡️</span> Security</a>
+                    <a href="#"><span>📞</span> Contact Support</a>
+                </nav>
+            </div>
+
+            <!-- THE NEW PROFILE SECTION -->
+            <div class="user-profile-section">
+                <hr class="profile-divider">
+                <div class="profile-content">
+                    <div class="user-avatar-icon">👤</div>
+                    <div class="user-details-group">
+                        <span class="active-bidder-label">ACTIVE BIDDER</span>
+                        <h4 id="display-username">Guest</h4>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -47,19 +52,12 @@
                 </div>
                 <div class="header-right">
                     <div class="system-status">● System Online</div>
-                    <button class="reset-btn" onclick="resetAll()">RESET ALL DATA</button>
+                    <button class="reset-btn" onclick="resetAll()">RESET DATA</button>
                 </div>
             </header>
 
             <div class="dashboard-grid">
-                <!-- Auction Grid Section -->
-                <section class="auction-section">
-                    <div id="auction-container" class="grid-container">
-                        <!-- 9 Boxes injected by Script -->
-                    </div>
-                </section>
-
-                <!-- Activity Sidebar -->
+                <div id="auction-container" class="grid-container"></div>
                 <aside class="activity-log">
                     <h3>Live Activity Feed</h3>
                     <div id="activity-feed"></div>

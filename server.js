@@ -9,7 +9,7 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// THE DATA (The 9 boxes your Mam wants to see)
+// THE DATA (9 items for the auction grid)
 let auctions = [
     { id: 1, name: "McLaren P1", currentBid: 5000, img: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=500" },
     { id: 2, name: "Rolex Daytona", currentBid: 1200, img: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500" },
@@ -27,27 +27,21 @@ let connectedUsers = 0;
 io.on('connection', (socket) => {
     connectedUsers++;
     io.emit('userCount', connectedUsers);
-    
-    // Send initial items to the new user
     socket.emit('init', auctions);
 
-    // Handle user login event
     socket.on('userJoined', (username) => {
         io.emit('activity', `${username} joined the auction room`);
     });
 
-    // Handle bidding
     socket.on('placeBid', (data) => {
         const item = auctions.find(a => a.id === data.id);
         if (item && data.bidAmount > item.currentBid) {
             item.currentBid = data.bidAmount;
-            // Tell everyone about the new bid
             io.emit('init', auctions); 
             io.emit('activity', `${data.user} bid $${data.bidAmount} on ${item.name}`);
         }
     });
 
-    // Handle reset
     socket.on('resetData', () => {
         auctions.forEach(a => a.currentBid = Math.floor(Math.random() * 1000) + 100);
         io.emit('init', auctions);
@@ -61,6 +55,4 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
