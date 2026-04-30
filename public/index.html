@@ -8,33 +8,42 @@
 </head>
 <body>
 
-    <!-- LOGIN SCREEN (Updated Layout) -->
+    <!-- AUTHENTICATION SCREEN -->
     <div id="login-overlay" class="overlay">
         <div class="login-card">
             <h1>AUCTION<span>CORE</span></h1>
-            <p class="login-subtitle">Secure Access Protocol | Enter Name to Join</p>
             
-            <div class="login-form">
-                <input type="text" id="username-input" placeholder="Username..." autocomplete="off">
-                <button onclick="handleLogin()" class="login-btn">LOGIN TO DASHBOARD</button>
+            <div class="auth-tabs">
+                <button id="tab-signin" class="auth-tab active" onclick="switchAuth('signin')">Sign In</button>
+                <button id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</button>
+            </div>
+
+            <!-- Sign In View -->
+            <div id="signin-form" class="login-form">
+                <input type="text" id="signin-user" placeholder="Username" autocomplete="off">
+                <input type="password" id="signin-pass" placeholder="Password">
+                <button onclick="handleAuth('signin')" class="login-btn">LOGIN TO DASHBOARD</button>
+            </div>
+
+            <!-- Sign Up View -->
+            <div id="signup-form" class="login-form hidden">
+                <input type="text" id="signup-user" placeholder="Choose Username" autocomplete="off">
+                <input type="email" id="signup-email" placeholder="Email Address">
+                <input type="password" id="signup-pass" placeholder="Create Password">
+                <button onclick="handleAuth('signup')" class="login-btn">CREATE ACCOUNT</button>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
+    <!-- MAIN DASHBOARD -->
     <div id="dashboard" class="hidden">
         <aside class="sidebar">
-            <div class="sidebar-top">
-                <div class="sidebar-logo">AC <span>v2.0</span></div>
-                <nav class="nav-links">
-                    <a href="#" class="active"><span>🏠</span> Dashboard</a>
-                    <a href="#"><span>📊</span> Market Trends</a>
-                    <a href="#"><span>🛡️</span> Security</a>
-                    <a href="#"><span>📞</span> Contact Support</a>
-                </nav>
-            </div>
+            <div class="sidebar-logo">AC <span>v2.0</span></div>
+            <nav class="nav-links">
+                <a href="#" class="active">Dashboard</a>
+                <a href="#">Market Trends</a>
+            </nav>
 
-            <!-- PROFILE SECTION -->
             <div class="user-profile-section">
                 <hr class="profile-divider">
                 <div class="profile-content">
@@ -49,23 +58,10 @@
 
         <main class="main-content">
             <header class="dashboard-header">
-                <div class="header-left">
-                    <h1>Live Auction Meeting System</h1>
-                    <p id="live-users">Users Connected: 0</p>
-                </div>
-                <div class="header-right">
-                    <div class="system-status">● System Online</div>
-                    <button class="reset-btn" onclick="resetAll()">RESET DATA</button>
-                </div>
+                <h1>Live Auction Meeting System</h1>
+                <p id="live-users">Users Connected: 0</p>
             </header>
-
-            <div class="dashboard-grid">
-                <div id="auction-container" class="grid-container"></div>
-                <aside class="activity-log">
-                    <h3>Live Activity Feed</h3>
-                    <div id="activity-feed"></div>
-                </aside>
-            </div>
+            <div id="auction-container" class="grid-container"></div>
         </main>
     </div>
 

@@ -9,7 +9,9 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
 body { background: var(--bg-dark); color: white; overflow: hidden; }
 
-/* LOGIN OVERLAY & CARD (Fixed Vertical Layout) */
+.hidden { display: none !important; }
+
+/* AUTHENTICATION STYLING */
 .overlay {
     position: fixed;
     inset: 0;
@@ -22,38 +24,50 @@ body { background: var(--bg-dark); color: white; overflow: hidden; }
 
 .login-card {
     background: var(--card-bg);
-    padding: 50px;
+    padding: 40px;
     border-radius: 20px;
     border: 2px solid var(--primary);
     text-align: center;
     width: 100%;
-    max-width: 450px;
+    max-width: 400px;
 }
 
 .login-card h1 span { color: var(--primary); }
 
-.login-subtitle {
+.auth-tabs {
+    display: flex;
     margin-bottom: 25px;
-    font-size: 14px;
-    color: var(--text-dim);
     border-bottom: 1px solid #333;
-    padding-bottom: 10px;
+}
+
+.auth-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.auth-tab.active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
-input#username-input {
+.login-form input {
     width: 100%;
-    padding: 15px;
+    padding: 12px;
     background: #000;
     border: 1px solid #444;
     color: white;
     border-radius: 8px;
-    font-size: 16px;
     outline: none;
 }
 
@@ -61,50 +75,20 @@ input#username-input {
     background: var(--primary);
     color: black;
     border: none;
-    padding: 15px;
+    padding: 14px;
     font-weight: bold;
-    font-size: 14px;
     cursor: pointer;
-    width: 100%;
     border-radius: 8px;
-    transition: 0.3s;
+    margin-top: 10px;
 }
 
-/* DASHBOARD LAYOUT */
+/* DASHBOARD STYLING */
 #dashboard { display: flex; height: 100vh; }
-.hidden { display: none !important; }
+.sidebar { width: 260px; background: var(--sidebar-bg); padding: 25px; display: flex; flex-direction: column; }
+.main-content { flex: 1; padding: 30px; overflow-y: auto; margin-left: 0; }
+.grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.auction-box { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid #333; text-align: center; }
+.image-placeholder { height: 150px; background-size: cover; background-position: center; border-radius: 5px; margin-bottom: 10px; }
 
-.sidebar {
-    width: 260px;
-    background: var(--sidebar-bg);
-    border-right: 1px solid #222;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 25px;
-}
-
-.sidebar-logo { font-size: 24px; font-weight: bold; margin-bottom: 30px; }
-.sidebar-logo span { color: var(--primary); }
-
-.nav-links a { display: block; color: var(--text-dim); text-decoration: none; padding: 12px 0; }
-.nav-links a.active { color: var(--primary); }
-
-.user-profile-section { width: 100%; margin-top: auto; }
 .profile-divider { border: 0; border-top: 1px solid #333; margin: 15px 0; }
-.profile-content { display: flex; align-items: center; gap: 12px; }
-.user-avatar-icon { width: 35px; height: 35px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-
-.active-bidder-label { font-size: 10px; color: var(--text-dim); font-weight: bold; text-transform: uppercase; }
-.user-details-group h4 { font-size: 16px; color: white; }
-
-.main-content { flex: 1; padding: 30px; overflow-y: auto; }
-.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 15px; }
-
-.dashboard-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
-.grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-
-.auction-box { background: var(--card-bg); padding: 15px; border-radius: 10px; border: 1px solid #333; }
-.image-placeholder { height: 140px; background-size: cover; border-radius: 5px; margin-bottom: 10px; }
-
-.bid-btn { width: 100%; background: var(--primary); color: black; border: none; padding: 10px; font-weight: bold; cursor: pointer; }
+.active-bidder-label { font-size: 10px; color: var(--text-dim); font-weight: bold; }
