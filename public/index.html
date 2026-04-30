@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Auction Meeting System | Dashboard</title>
+    <title>AuctionCore v2.0 | Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- LOGIN SCREEN -->
+    <!-- LOGIN SCREEN (Updated Layout) -->
     <div id="login-overlay" class="overlay">
         <div class="login-card">
             <h1>AUCTION<span>CORE</span></h1>
-            <p>Secure Access Protocol | Enter Name to Join</p>
-            <input type="text" id="username-input" placeholder="Username..." autocomplete="off">
-            <button onclick="handleLogin()" class="login-btn">INITIALIZE DASHBOARD</button>
+            <p class="login-subtitle">Secure Access Protocol | Enter Name to Join</p>
+            
+            <div class="login-form">
+                <input type="text" id="username-input" placeholder="Username..." autocomplete="off">
+                <button onclick="handleLogin()" class="login-btn">LOGIN TO DASHBOARD</button>
+            </div>
         </div>
     </div>
 
@@ -31,7 +34,7 @@
                 </nav>
             </div>
 
-            <!-- THE NEW PROFILE SECTION -->
+            <!-- PROFILE SECTION -->
             <div class="user-profile-section">
                 <hr class="profile-divider">
                 <div class="profile-content">

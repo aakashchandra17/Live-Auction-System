@@ -24,7 +24,7 @@ socket.on('init', (auctions) => {
             <div class="image-placeholder" style="background-image: url('${item.img}')"></div>
             <h3>${item.name}</h3>
             <p>Current Bid: <strong style="color:#00ff88">$${item.currentBid}</strong></p>
-            <input type="number" id="input-${item.id}" class="bid-input" placeholder="Bid > $${item.currentBid}">
+            <input type="number" id="input-${item.id}" style="width:100%; padding:8px; margin:10px 0; background:#000; border:1px solid #444; color:white;" placeholder="Bid > $${item.currentBid}">
             <button class="bid-btn" onclick="placeBid(${item.id})">PLACE BID</button>
         `;
         container.appendChild(box);
@@ -49,7 +49,8 @@ socket.on('activity', (msg) => {
 });
 
 socket.on('userCount', (count) => {
-    document.getElementById('live-users').innerText = `Users Connected: ${count}`;
+    const userDisplay = document.getElementById('live-users');
+    if(userDisplay) userDisplay.innerText = `Users Connected: ${count}`;
 });
 
 function resetAll() {

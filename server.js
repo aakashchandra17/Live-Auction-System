@@ -9,7 +9,6 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// THE DATA (9 items for the auction grid)
 let auctions = [
     { id: 1, name: "McLaren P1", currentBid: 5000, img: "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=500" },
     { id: 2, name: "Rolex Daytona", currentBid: 1200, img: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500" },
@@ -43,7 +42,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('resetData', () => {
-        auctions.forEach(a => a.currentBid = Math.floor(Math.random() * 1000) + 100);
+        auctions.forEach(a => a.currentBid = 100);
         io.emit('init', auctions);
         io.emit('activity', "System Admin reset all auction data.");
     });
