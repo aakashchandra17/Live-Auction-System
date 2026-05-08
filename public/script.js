@@ -1,147 +1,175 @@
-const socket = io();
+const socket = (typeof io === 'function') ? io() : null;
 let currentUser = "";
-let registeredUsers = []; // Session memory for mandatory signup check
 
-/**
- * AUTHENTICATION LOGIC
- * Mandatory flow: Sign Up -> Sign In -> Dashboard
- */
+// In-memory user store: { username -> { email, password } }
+let registeredUsers = {};
 
-// Toggle between Sign In and Sign Up tabs
+function emitSocket(event, payload) {
+    if (socket) {
+        socket.emit(event, payload);
+    }
+}
+
+function onSocket(event, handler) {
+    if (socket) {
+        socket.on(event, handler);
+    }
+}
+
+// DIRECT PAGE SHOW/HIDE LOGIC
+function showPage(pageId) {
+    document.getElementById('page-dash').classList.add('hidden');
+    document.getElementById('page-trends').classList.add('hidden');
+    document.getElementById('page-security').classList.add('hidden');
+
+    document.getElementById('page-' + pageId).classList.remove('hidden');
+
+    document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+    const activeLink = document.getElementById('link-' + pageId);
+    if (activeLink) activeLink.classList.add('active');
+}
+
 function switchAuth(type) {
     const isSignIn = (type === 'signin');
-    
-    // Toggle Form Visibility
     document.getElementById('signin-form').classList.toggle('hidden', !isSignIn);
     document.getElementById('signup-form').classList.toggle('hidden', isSignIn);
-    
-    // Toggle Tab Styling
     document.getElementById('tab-signin').classList.toggle('active', isSignIn);
     document.getElementById('tab-signup').classList.toggle('active', !isSignIn);
 }
 
-// STEP 1: COMPULSORY SIGN UP WITH GMAIL VALIDATION
 function handleSignUp() {
-    const user = document.getElementById('signup-new-user').value.trim();
+    const user  = document.getElementById('signup-new-user').value.trim();
     const email = document.getElementById('signup-email').value.trim();
-    const pass = document.getElementById('signup-new-pass').value.trim();
+    const pass  = document.getElementById('signup-new-pass').value.trim();
 
-    // Check if all fields are filled
-    if (!user || !email || !pass) {
-        alert("Registration is mandatory. Please fill all fields.");
+    if (!user) {
+        alert("Please enter a username.");
         return;
     }
-
-    // MANDATORY: Check for @gmail.com suffix
     if (!email.toLowerCase().endsWith("@gmail.com")) {
-        alert("Invalid Email! You must use a @gmail.com address to register.");
+        alert("Please use a valid @gmail.com address.");
+        return;
+    }
+    if (!pass) {
+        alert("Please enter a password.");
+        return;
+    }
+    if (registeredUsers[user]) {
+        alert("Username already taken. Please choose another.");
         return;
     }
 
-    // Save to session memory
-    registeredUsers.push(user); 
-    alert("Account Created Successfully! Please Sign In with your credentials.");
-    
-    // Clear sign-up fields
-    document.getElementById('signup-new-user').value = "";
-    document.getElementById('signup-email').value = "";
-    document.getElementById('signup-new-pass').value = "";
-    
-    // Force switch to Sign In tab
+    // Register the user
+    registeredUsers[user] = { email, password: pass };
+
+    // Pre-fill sign in fields for convenience
+    document.getElementById('signin-user').value = user;
+    document.getElementById('signin-pass').value = pass;
+
+    // Notify user and switch to Sign In so they must authenticate explicitly
+    alert("Account created! Please sign in to continue.");
     switchAuth('signin');
 }
 
-// STEP 2: SIGN IN WITH MANDATORY CHECK
 function handleSignIn() {
     const user = document.getElementById('signin-user').value.trim();
     const pass = document.getElementById('signin-pass').value.trim();
 
-    if (user && pass) {
-        // Validation: User must have registered during this session
-        if (!registeredUsers.includes(user)) {
-            alert("Error: Username not found. Signup is mandatory before signing in!");
-            switchAuth('signup'); 
-            return;
-        }
-
-        // Proceed to the Auction Dashboard
-        currentUser = user;
-        document.getElementById('display-username').innerText = currentUser;
-        document.getElementById('login-overlay').classList.add('hidden');
-        document.getElementById('dashboard').classList.remove('hidden');
-        
-        socket.emit('userJoined', currentUser);
-    } else {
-        alert("Please enter credentials to enter the auction.");
+    if (!user || !pass) {
+        alert("Please enter both username and password.");
+        return;
     }
+
+    const record = registeredUsers[user];
+    if (!record) {
+        alert("Username not found. Please Sign Up first.");
+        return;
+    }
+    if (record.password !== pass) {
+        alert("Incorrect password. Please try again.");
+        return;
+    }
+
+    loginUser(user);
 }
 
-/**
- * DASHBOARD & BIDDING LOGIC
- * Preserves the interface seen in your screenshots
- */
+function loginUser(user) {
+    currentUser = user;
+    document.getElementById('display-username').innerText = currentUser;
 
-// Initialize auction items from server
-socket.on('init', (auctions) => {
+    // Remove login overlay completely
+    const overlay = document.getElementById('login-overlay');
+    overlay.remove();
+
+    document.getElementById('dashboard').classList.remove('hidden');
+    emitSocket('userJoined', currentUser);
+}
+
+// CONTACT SUPPORT FUNCTIONS
+function openContact()  { document.getElementById('contact-modal').classList.remove('hidden'); }
+function closeContact() { document.getElementById('contact-modal').classList.add('hidden'); }
+function sendContact()  {
+    alert("Message sent to Aakash!");
+    closeContact();
+}
+
+// RESET ALL
+function resetAll() {
+    emitSocket('resetData');
+}
+
+// AUCTION CORE LOGIC
+onSocket('init', (auctions) => {
     const container = document.getElementById('auction-container');
-    container.innerHTML = ''; 
+    container.innerHTML = '';
     auctions.forEach(item => {
         const box = document.createElement('div');
         box.className = 'auction-box';
+        box.id = 'auction-' + item.id;
         box.innerHTML = `
             <div class="image-placeholder" style="background-image: url('${item.img}')"></div>
             <h3>${item.name}</h3>
-            <p>Current Bid: <strong style="color:#00ff88">$${item.currentBid}</strong></p>
-            <input type="number" id="input-${item.id}" 
-                   style="width:100%; padding:8px; margin:10px 0; background:#000; border:1px solid #444; color:white;" 
-                   placeholder="Bid > $${item.currentBid}">
-            <button class="bid-btn" onclick="placeBid(${item.id}, '${item.name}')">PLACE BID</button>
+            <p>Current Bid: <strong id="bid-${item.id}">$${item.currentBid}</strong></p>
+            <input type="number" id="input-${item.id}" placeholder="Enter your bid...">
+            <button class="bid-btn" onclick="placeBid(${item.id}, '${item.name}')">BID NOW</button>
         `;
         container.appendChild(box);
     });
 });
 
-// Logic to place a bid with low-bid popup alert
 function placeBid(id, itemName) {
     const input = document.getElementById(`input-${id}`);
     const bidAmount = parseInt(input.value);
     
-    // Get the current bid value from the UI
-    const currentBidElement = document.querySelector(`.auction-box:nth-child(${id}) strong`);
-    const currentBidValue = parseInt(currentBidElement.innerText.replace('$', ''));
-
-    if (!bidAmount) {
-        alert("Please enter a bid amount.");
+    if (!bidAmount || bidAmount <= 0) {
+        alert("Please enter a valid bid amount.");
         return;
     }
-
-    // ALERT: If bid is less than or equal to current bid
-    if (bidAmount <= currentBidValue) {
-        alert(`Your bid of $${bidAmount} is too low! You must bid more than $${currentBidValue}.`);
+    
+    // Get the current bid value
+    const currentBidElement = document.getElementById(`bid-${id}`);
+    const currentBidText = currentBidElement.innerText;
+    const currentBid = parseInt(currentBidText.replace('$', ''));
+    
+    // Check if bid is higher than current bid
+    if (bidAmount <= currentBid) {
+        alert(`Your bid is too low! Current bid is $${currentBid}. Please place a bid higher than $${currentBid}.`);
         return;
     }
-
-    // Sends specific format: "Username placed Amount bid on Item"
-    socket.emit('placeBid', { id, bidAmount, user: currentUser, itemName: itemName });
+    
+    emitSocket('placeBid', { id, bidAmount, user: currentUser, itemName });
     input.value = '';
 }
 
-// Update the Live Activity Feed
-socket.on('activity', (msg) => {
+onSocket('activity', (msg) => {
     const feed = document.getElementById('activity-feed');
     const entry = document.createElement('div');
-    entry.style.cssText = "font-size: 13px; color: #888; margin-bottom: 5px; border-bottom: 1px solid #222;";
+    entry.style.cssText = "padding: 8px 0; border-bottom: 1px solid #222; font-size: 13px; color: #aaa;";
     entry.innerText = msg;
     feed.prepend(entry);
 });
 
-// Update the connection counter
-socket.on('userCount', (count) => {
-    const userDisplay = document.getElementById('live-users');
-    if(userDisplay) userDisplay.innerText = `Users Connected: ${count}`;
+onSocket('userCount', (count) => {
+    const el = document.getElementById('live-users');
+    if (el) el.innerText = `Users Connected: ${count}`;
 });
-
-// Admin Reset Function
-function resetAll() {
-    if(confirm("Reset all bids?")) socket.emit('resetData');
-}

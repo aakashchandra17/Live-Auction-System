@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    <!-- AUTHENTICATION OVERLAY -->
     <div id="login-overlay" class="overlay">
         <div class="login-card">
             <h1>AUCTION<span>CORE</span></h1>
@@ -19,14 +18,12 @@
                 <button type="button" id="tab-signup" class="auth-tab" onclick="switchAuth('signup')">Sign Up</button>
             </div>
 
-            <!-- Sign In Form -->
             <div id="signin-form" class="login-form">
                 <input type="text" id="signin-user" placeholder="Username" autocomplete="off">
                 <input type="password" id="signin-pass" placeholder="Password">
                 <button type="button" onclick="handleSignIn()" class="login-btn">SIGN IN</button>
             </div>
 
-            <!-- Sign Up Form (Compulsory for first-time visitors) -->
             <div id="signup-form" class="login-form hidden">
                 <input type="text" id="signup-new-user" placeholder="Create Username" autocomplete="off">
                 <input type="email" id="signup-email" placeholder="Email Address">
@@ -36,16 +33,28 @@
         </div>
     </div>
 
-    <!-- DASHBOARD (Interface strictly preserved from screenshot) -->
+    <div id="contact-modal" class="overlay hidden">
+        <div class="login-card">
+            <h1>CONTACT<span>SUPPORT</span></h1>
+            <p class="login-subtitle">Send a message to the Administrator</p>
+            <div class="login-form">
+                <input type="email" id="contact-email" placeholder="Your Email Address">
+                <textarea id="contact-msg" placeholder="How can we help you?" style="width:100%; height:100px; background:#000; border:1px solid #444; color:white; border-radius:8px; padding:10px; font-family:inherit;"></textarea>
+                <button type="button" onclick="sendContact()" class="login-btn">SEND MESSAGE</button>
+                <button type="button" onclick="closeContact()" style="background:transparent; color:#888; border:none; cursor:pointer; margin-top:10px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div id="dashboard" class="hidden">
         <aside class="sidebar">
             <div class="sidebar-top">
                 <div class="sidebar-logo">AC <span>v2.0</span></div>
                 <nav class="nav-links">
-                    <a href="#" class="active"><span>🏠</span> Dashboard</a>
-                    <a href="#"><span>📊</span> Market Trends</a>
-                    <a href="#"><span>🛡️</span> Security</a>
-                    <a href="#"><span>📞</span> Contact Support</a>
+                    <a href="#" id="link-dash" class="active" onclick="showPage('dash')"><span>🏠</span> Dashboard</a>
+                    <a href="#" id="link-trends" onclick="showPage('trends')"><span>📊</span> Market Trends</a>
+                    <a href="#" id="link-security" onclick="showPage('security')"><span>🛡️</span> Security</a>
+                    <a href="#" onclick="openContact()"><span>📞</span> Contact Support</a>
                 </nav>
             </div>
 
@@ -62,23 +71,61 @@
         </aside>
 
         <main class="main-content">
-            <header class="dashboard-header">
-                <div class="header-left">
-                    <h1>Live Auction Bidding System</h1>
-                    <p id="live-users">Users Connected: 0</p>
-                </div>
-                <div class="header-right">
-                    <div class="system-status">● System Online</div>
-                    <button class="reset-btn" onclick="resetAll()">RESET DATA</button>
-                </div>
-            </header>
+            <div id="page-dash">
+                <header class="dashboard-header">
+                    <div class="header-left">
+                        <h1>Live Auction Bidding System</h1>
+                        <p id="live-users">Users Connected: 0</p>
+                    </div>
+                    <div class="header-right">
+                        <div class="system-status">● System Online</div>
+                        <button class="reset-btn" onclick="resetAll()">RESET DATA</button>
+                    </div>
+                </header>
 
-            <div class="dashboard-grid">
-                <div id="auction-container" class="grid-container"></div>
-                <aside class="activity-log">
-                    <h3>Live Activity Feed</h3>
-                    <div id="activity-feed"></div>
-                </aside>
+                <div class="dashboard-grid">
+                    <div id="auction-container" class="grid-container"></div>
+                    <aside class="activity-log">
+                        <h3>Live Activity Feed</h3>
+                        <div id="activity-feed"></div>
+                    </aside>
+                </div>
+            </div>
+
+            <div id="page-trends" class="hidden">
+                <header class="dashboard-header">
+                    <h1>Market Trends</h1>
+                    <p style="color:var(--text-dim)">Visual analysis of bidding volume</p>
+                </header>
+                <div style="background:var(--card-bg); padding:40px; border-radius:15px; border:1px solid #333;">
+                    <div class="chart-box" style="display:flex; align-items:flex-end; gap:25px; height:300px; border-bottom:2px solid #444; padding-bottom:10px;">
+                        <div style="flex:1; background:var(--primary); height:85%; border-radius:5px 5px 0 0; position:relative;"><span style="position:absolute; top:-25px; width:100%; text-align:center; font-size:12px;">85%</span></div>
+                        <div style="flex:1; background:var(--primary); height:45%; border-radius:5px 5px 0 0; position:relative;"><span style="position:absolute; top:-25px; width:100%; text-align:center; font-size:12px;">45%</span></div>
+                        <div style="flex:1; background:var(--primary); height:95%; border-radius:5px 5px 0 0; position:relative;"><span style="position:absolute; top:-25px; width:100%; text-align:center; font-size:12px;">95%</span></div>
+                        <div style="flex:1; background:var(--primary); height:65%; border-radius:5px 5px 0 0; position:relative;"><span style="position:absolute; top:-25px; width:100%; text-align:center; font-size:12px;">65%</span></div>
+                        <div style="flex:1; background:var(--primary); height:30%; border-radius:5px 5px 0 0; position:relative;"><span style="position:absolute; top:-25px; width:100%; text-align:center; font-size:12px;">30%</span></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:15px; color:var(--text-dim); font-size:13px; font-weight:bold;">
+                        <span>Luxury Cars</span><span>Watches</span><span>Electronics</span><span>Computing</span><span>Apparel</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-security" class="hidden">
+                <header class="dashboard-header">
+                    <h1>Security Protocol</h1>
+                    <div class="system-status">ENCRYPTION ACTIVE</div>
+                </header>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                    <div style="background:#111; padding:25px; border-radius:10px; border-left:4px solid var(--primary);">
+                        <h3>End-to-End Encryption</h3>
+                        <p style="color:var(--text-dim); margin-top:10px; font-size:14px;">All bidding data transmitted via Socket.io is encapsulated in secure packets to ensure no middle-man interception.</p>
+                    </div>
+                    <div style="background:#111; padding:25px; border-radius:10px; border-left:4px solid var(--primary);">
+                        <h3>Identity Verification</h3>
+                        <p style="color:var(--text-dim); margin-top:10px; font-size:14px;">Mandatory Gmail validation and session-based registration prevents botting and unauthorized account creation.</p>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
